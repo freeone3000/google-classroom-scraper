@@ -8,6 +8,10 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import undetected_chromedriver as uc
 
+# the following were updated on 2025-11-12
+CLASS_CLASS_NAME: str = "ScpeUc Vu2fZd XwD7Ke"
+LESSON_CLASS_NAME: str = "Vu2fZd Cx437e"
+MATERIAL_CLASS_NAME: str = "A6dC2c QDKOcc UtdKPb U0QIdc"
 
 class GCScraper:
     def __init__(
@@ -50,12 +54,13 @@ class GCScraper:
 
             sleep(2)
 
-            self.driver.find_element(
-                "xpath", '//*[@id="password"]/div[1]/div/div[1]/input'
-            ).send_keys(self.password)
-            self.driver.find_elements(
-                "xpath", '//*[@id="passwordNext"]'
-            )[0].click()
+            if self.password != "%%USE PASSKEY%%":
+                self.driver.find_element(
+                    "xpath", '//*[@id="password"]/div[1]/div/div[1]/input'
+                ).send_keys(self.password)
+                self.driver.find_elements(
+                    "xpath", '//*[@id="passwordNext"]'
+                )[0].click()
 
             sleep(5)
 
@@ -74,7 +79,7 @@ class GCScraper:
             sleep(10)
 
             course = self.driver.find_element(
-                "xpath", f'//div[contains(text(), "{courseTitle}") and @class="YVvGBb z3vRcc-ZoZQ1"]'
+                "xpath", f'//div[contains(text(), "{courseTitle}") and @class="{CLASS_CLASS_NAME}"]'
             )
             self.courseTitle = course.text
             course.click()
@@ -100,12 +105,12 @@ class GCScraper:
 
         sleep(5)
 
-        viewMore = self.driver.execute_script(
-            "return document.getElementsByClassName('VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-dgl2Hf ksBjEc lKxP2d LQeN7 nZ34k')"
+        viewMore = self.driver.find_element(
+            "xpath", "//span[contains(text(), 'View more') and @aria-hidden='true']"
         )
 
-        if viewMore:
-            self.driver.execute_script("arguments[0].click()", viewMore[0])
+        while viewMore:
+            self.driver.execute_script("arguments[0].click()", viewMore)
 
             sleep(2)
 
@@ -113,10 +118,14 @@ class GCScraper:
                 "window.scrollTo(0, document.body.scrollHeight);"
             )
 
-            sleep(5)
+            sleep(1)
+
+            viewMore = self.driver.find_element(
+                "xpath", "//span[contains(text(), 'View more') and @aria-hidden='true']"
+            )
 
         posts = self.driver.execute_script(
-            "return document.getElementsByClassName('xVnXCf QRiHXd')"
+            f"return document.getElementsByClassName('{LESSON_CLASS_NAME}')"
         )
 
         print(f"Found {len(posts)} Posts")
@@ -132,7 +141,7 @@ class GCScraper:
         sleep(5)
 
         materials = self.driver.execute_script(
-            "return document.getElementsByClassName('pOf0gc QRiHXd Aopndd M4LFnf');"
+            f"return document.getElementsByClassName('{MATERIAL_CLASS_NAME}');"
         )
 
         print(f"Found {len(materials)} Materials")
