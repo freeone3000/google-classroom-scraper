@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+import undetected_chromedriver as uc
 
 
 class GCScraper:
@@ -23,7 +24,7 @@ class GCScraper:
         self.options.add_experimental_option("prefs", self.prefs)
 
         self.service = Service()
-        self.driver = webdriver.Chrome(
+        self.driver = uc.Chrome(
             service=self.service, options=self.options
         )
         self.driver.maximize_window()
